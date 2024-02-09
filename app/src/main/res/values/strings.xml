@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Film_API</string>
+    <string name="enter_film_name">Enter film name</string>
+    <string name="rating">Rating: %1$s</string>
+    <string name="no_movie_found_for_your_request">No movie found for your request</string>
+    <string name="please_enter_film_name">Please enter film name!</string>
+    <string name="please_turn_on_the_internet">Please turn on the internet!</string>
+</resources>
