@@ -5,4 +5,6 @@
     <string name="no_movie_found_for_your_request">No movie found for your request</string>
     <string name="please_enter_film_name">Please enter film name!</string>
     <string name="please_turn_on_the_internet">Please turn on the internet!</string>
+    <string name="some_problems_with_server_or_your_network">Some problems with server or your network!</string>
+    <string name="retry">RETRY</string>
 </resources>

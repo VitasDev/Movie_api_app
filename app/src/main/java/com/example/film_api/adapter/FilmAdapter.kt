@@ -1,54 +1,47 @@
 package com.example.film_api.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.film_api.Constants
 import com.example.film_api.Constants.IMAGE_URL
 import com.example.film_api.R
-import com.example.film_api.interfaces.OnItemClickListener
-import com.example.film_api.model.Films
+import com.example.film_api.activities.InfoFilmActivity
+import com.example.film_api.databinding.ItemFilmBinding
+import com.example.film_api.model.Film
 
-class FilmAdapter(private val mOnItemClickListener: OnItemClickListener) :
-    RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
+class FilmAdapter: RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
 
-    private var filmsList = emptyList<Films>()
+    private var filmsList = emptyList<Film>()
 
-    class FilmViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgPoster = itemView.findViewById<ImageView>(R.id.img_poster)!!
-        var txtTitle = itemView.findViewById<TextView>(R.id.txt_title)!!
-        var txtDescription = itemView.findViewById<TextView>(R.id.txt_description)!!
-        var containerFilm = itemView.findViewById<ConstraintLayout>(R.id.container_film)!!
-    }
+    class FilmViewHolder(val itemBinding: ItemFilmBinding) : RecyclerView.ViewHolder(itemBinding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilmViewHolder {
-        return FilmViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_film, parent, false)
-        )
+        val itemBinding = ItemFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FilmViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
         val currentItem = filmsList[position]
 
-        holder.txtTitle.text = currentItem.name
-        holder.txtDescription.text = currentItem.description
+        holder.itemBinding.txtTitle.text = currentItem.name
+        holder.itemBinding.txtDescription.text = currentItem.description
 
         Glide.with(holder.itemView)
             .load(IMAGE_URL + currentItem.poster)
             .placeholder(R.drawable.img_empty_poster)
-            .into(holder.imgPoster)
+            .into(holder.itemBinding.imgPoster)
 
-        holder.containerFilm.setOnClickListener {
-            mOnItemClickListener.onItemClick(currentItem)
+        holder.itemBinding.containerFilm.setOnClickListener {
+            val intent = Intent(it.context, InfoFilmActivity::class.java)
+            intent.putExtra(Constants.EXTRA_OBJ, currentItem ?: "")
+            it.context.startActivity(intent)
         }
     }
 
-    fun setData(films: List<Films>) {
+    fun setData(films: List<Film>) {
         this.filmsList = films.reversed()
         notifyDataSetChanged()
     }

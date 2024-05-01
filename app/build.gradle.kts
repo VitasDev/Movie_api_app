@@ -1,8 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("kotlin-android-extensions")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -32,11 +31,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     packaging {
         resources {
@@ -59,14 +58,14 @@ dependencies {
 
     // Room components
     implementation ("androidx.room:room-runtime:2.4.3")
-    kapt ("androidx.room:room-compiler:2.4.3")
+    ksp("androidx.room:room-compiler:2.4.3")
     implementation ("androidx.room:room-ktx:2.4.3")
     androidTestImplementation ("androidx.room:room-testing:2.4.3")
 
     // Lifecycle components
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation ("androidx.lifecycle:lifecycle-common-java8:2.2.0")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.5.0")
@@ -76,6 +75,7 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72")
     api ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
     api ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5")
+    implementation ("androidx.activity:activity-ktx:1.8.2")
 
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.12.0")

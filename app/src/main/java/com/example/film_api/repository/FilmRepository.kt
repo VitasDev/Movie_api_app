@@ -1,14 +1,14 @@
 package com.example.film_api.repository
 
-import androidx.lifecycle.LiveData
 import com.example.film_api.data.FilmDao
-import com.example.film_api.model.Films
+import com.example.film_api.model.Film
+import kotlinx.coroutines.flow.Flow
 
 class FilmRepository(private val filmDao: FilmDao) {
 
-    val readAllFilms: LiveData<List<Films>> = filmDao.readAllFilms()
+    val readAllFilms: Flow<List<Film>> = filmDao.readAllFilms()
 
-    suspend fun addFilms(films: List<Films>) {
+    suspend fun addFilms(films: List<Film>) {
         filmDao.addFilms(films)
     }
 }

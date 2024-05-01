@@ -5,44 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/back_search_bar"
+    <SearchView
+        android:id="@+id/edit_text_enter_film_name"
         android:layout_width="match_parent"
         android:layout_height="58dp"
+        android:hint="@string/enter_film_name"
+        android:cursorVisible="true"
+        android:background="@drawable/transparent_rectangle_with_corners"
+        android:includeFontPadding="false"
+        android:textColor="@color/h1_txt_color"
+        android:textSize="16sp"
+        android:queryHint="@string/enter_film_name"
+        android:maxLines="1"
+        android:iconifiedByDefault="false"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:layout_margin="16dp"
-        android:paddingStart="18dp"
+        android:paddingStart="8dp"
         android:paddingEnd="16dp"
-        android:background="@drawable/transparent_rectangle_with_corners"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/edit_text_enter_film_name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:hint="@string/enter_film_name"
-            android:cursorVisible="true"
-            android:background="@android:color/transparent"
-            android:includeFontPadding="false"
-            android:textColor="@color/h1_txt_color"
-            android:textSize="16sp"
-            android:maxLines="1"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp"/>
-
-        <ImageButton
-            android:id="@+id/btn_clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_delete"
-            android:layout_gravity="center"
-            android:visibility="gone"/>
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/progress_circular"
@@ -51,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back_search_bar"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_enter_film_name"
         android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -61,7 +46,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back_search_bar"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_enter_film_name"
         android:layout_marginTop="8dp"
         android:scrollbars="vertical" />
+
+    <include
+        android:id="@+id/error_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_enter_film_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        layout="@layout/error_layout"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

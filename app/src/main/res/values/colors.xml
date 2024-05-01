@@ -2,4 +2,5 @@
 <resources>
     <color name="h1_txt_color">#292929</color>
     <color name="h2_txt_color">#6E6E6E</color>
+    <color name="white">#FFF</color>
 </resources>

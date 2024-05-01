@@ -7,19 +7,19 @@ import com.example.film_api.Constants
 import com.example.film_api.Constants.EXTRA_OBJ
 import com.example.film_api.R
 import com.example.film_api.databinding.ActivityInfoFilmBinding
-import com.example.film_api.model.Films
+import com.example.film_api.model.Film
 
 class InfoFilmActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityInfoFilmBinding
-    private lateinit var film: Films
+    private lateinit var film: Film
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInfoFilmBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        film = intent.getSerializableExtra(EXTRA_OBJ) as Films
+        film = intent.getSerializableExtra(EXTRA_OBJ) as Film
 
         binding.txtTitle.text = film.name
         binding.txtDescription.text = film.description
