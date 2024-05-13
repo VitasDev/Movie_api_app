@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
 }
 
@@ -68,8 +69,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.5.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.5.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.6.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.6.0")
 
     //Kotlin
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72")
@@ -79,4 +80,11 @@ dependencies {
 
     //Glide
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    ksp("com.google.dagger:dagger-compiler:2.48.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.48.1")
+    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.41")
+    kspAndroidTest ("com.google.dagger:hilt-android-compiler:2.42")
 }

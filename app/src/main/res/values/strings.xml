@@ -7,4 +7,6 @@
     <string name="please_turn_on_the_internet">Please turn on the internet!</string>
     <string name="some_problems_with_server_or_your_network">Some problems with server or your network!</string>
     <string name="retry">RETRY</string>
+    <string name="list_is_empty">List is Empty!</string>
+    <string name="response_failed">Response Failed</string>
 </resources>

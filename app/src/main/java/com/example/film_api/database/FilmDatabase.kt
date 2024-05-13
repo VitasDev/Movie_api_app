@@ -1,10 +1,10 @@
-package com.example.film_api.data
+package com.example.film_api.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.film_api.model.Film
+import com.example.film_api.data.Film
 
 @Database(entities = [Film::class], version = 1, exportSchema = false)
 abstract class FilmDatabase: RoomDatabase() {

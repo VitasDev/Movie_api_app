@@ -7,7 +7,7 @@ import com.example.film_api.Constants
 import com.example.film_api.Constants.EXTRA_OBJ
 import com.example.film_api.R
 import com.example.film_api.databinding.ActivityInfoFilmBinding
-import com.example.film_api.model.Film
+import com.example.film_api.data.Film
 
 class InfoFilmActivity : AppCompatActivity() {
 
@@ -21,11 +21,11 @@ class InfoFilmActivity : AppCompatActivity() {
 
         film = intent.getSerializableExtra(EXTRA_OBJ) as Film
 
-        binding.txtTitle.text = film.name
+        binding.txtTitle.text = film.title
         binding.txtDescription.text = film.description
 
         Glide.with(this)
-            .load(Constants.IMAGE_URL + film.poster)
+            .load(Constants.IMAGE_URL + film.posterPath)
             .placeholder(R.drawable.img_empty_poster)
             .into(binding.imgPoster)
 

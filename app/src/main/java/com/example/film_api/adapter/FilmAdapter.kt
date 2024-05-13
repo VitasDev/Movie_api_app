@@ -10,7 +10,7 @@ import com.example.film_api.Constants.IMAGE_URL
 import com.example.film_api.R
 import com.example.film_api.activities.InfoFilmActivity
 import com.example.film_api.databinding.ItemFilmBinding
-import com.example.film_api.model.Film
+import com.example.film_api.data.Film
 
 class FilmAdapter: RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
 
@@ -26,11 +26,11 @@ class FilmAdapter: RecyclerView.Adapter<FilmAdapter.FilmViewHolder>() {
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {
         val currentItem = filmsList[position]
 
-        holder.itemBinding.txtTitle.text = currentItem.name
+        holder.itemBinding.txtTitle.text = currentItem.title
         holder.itemBinding.txtDescription.text = currentItem.description
 
         Glide.with(holder.itemView)
-            .load(IMAGE_URL + currentItem.poster)
+            .load(IMAGE_URL + currentItem.posterPath)
             .placeholder(R.drawable.img_empty_poster)
             .into(holder.itemBinding.imgPoster)
 

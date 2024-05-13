@@ -11,29 +11,22 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.film_api.Constants.API_KEY
 import com.example.film_api.QueryTextListener
 import com.example.film_api.R
-import com.example.film_api.ReadFilmState
+import com.example.film_api.datastate.DataState
 import com.example.film_api.adapter.FilmAdapter
 import com.example.film_api.databinding.ActivitySearchBinding
-import com.example.film_api.model.Film
-import com.example.film_api.retrofit.FilmClient
 import com.example.film_api.viewmodel.FilmViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private val scope = CoroutineScope(Dispatchers.Main)
     private val filmViewModel: FilmViewModel by viewModels()
     private lateinit var connectivityService: ConnectivityManager
-    private var searchJob: Job? = null
+    private lateinit var adapterFilms: FilmAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,38 +34,12 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         connectivityService = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val adapterFilms = FilmAdapter()
+        adapterFilms = FilmAdapter()
 
         binding.rvFilms.adapter = adapterFilms
         binding.rvFilms.layoutManager = GridLayoutManager(this, 2)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                filmViewModel.readFilmState.collect {
-                    when(it) {
-                        is ReadFilmState.Success -> {
-                            binding.progressCircular.visibility = View.GONE
-                            binding.rvFilms.visibility = View.VISIBLE
-                            adapterFilms.setData(it.data)
-                        }
-                        is ReadFilmState.Error -> {
-                            binding.progressCircular.visibility = View.GONE
-                            Toast.makeText(
-                                binding.root.context,
-                                it.message,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                        is ReadFilmState.Loading -> {
-                            binding.rvFilms.visibility = View.GONE
-                            binding.progressCircular.visibility = View.VISIBLE
-                        }
-                        else -> Unit
-                    }
-                }
-            }
-        }
+        readFoundFilms()
 
         binding.editTextEnterFilmName.setOnQueryTextListener(
             QueryTextListener(
@@ -86,6 +53,63 @@ class SearchActivity : AppCompatActivity() {
         binding.errorContainer.btnRetry.setOnClickListener {
             searchByFilmName(binding.editTextEnterFilmName.query.toString())
         }
+
+        showCurrentFoundFilms()
+    }
+
+    private fun showCurrentFoundFilms() {
+        lifecycleScope.launch {
+            filmViewModel.findFilmState.collect {
+                when (it) {
+                    is DataState.EmptyData -> {
+                        showToast(R.string.no_movie_found_for_your_request)
+                    }
+                    is DataState.Success -> {
+                        binding.errorContainer.root.visibility = View.GONE
+                        binding.progressCircular.visibility = View.GONE
+                        binding.rvFilms.visibility = View.VISIBLE
+                    }
+                    is DataState.Error -> {
+                        binding.progressCircular.visibility = View.GONE
+                        binding.rvFilms.visibility = View.GONE
+                        binding.errorContainer.root.visibility = View.VISIBLE
+                        showToast(R.string.response_failed)
+                    }
+                    is DataState.Loading -> {
+                        binding.errorContainer.root.visibility = View.GONE
+                        binding.rvFilms.visibility = View.GONE
+                        binding.progressCircular.visibility = View.VISIBLE
+                    }
+                    else -> Unit
+                }
+            }
+        }
+    }
+
+    private fun readFoundFilms() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                filmViewModel.dataState.collect {
+                    when(it) {
+                        is DataState.EmptyData -> {
+                            binding.progressCircular.visibility = View.GONE
+                            showToast(R.string.list_is_empty)
+                        }
+                        is DataState.Success -> {
+                            binding.progressCircular.visibility = View.GONE
+                            binding.rvFilms.visibility = View.VISIBLE
+                            adapterFilms.setData(it.data)
+                        }
+                        is DataState.Loading -> {
+                            binding.rvFilms.visibility = View.GONE
+                            binding.progressCircular.visibility = View.VISIBLE
+                        }
+                        is DataState.Error -> {}
+                        else -> Unit
+                    }
+                }
+            }
+        }
     }
 
     private fun searchByFilmName(filmName: String) {
@@ -95,57 +119,13 @@ class SearchActivity : AppCompatActivity() {
             } else {
                 binding.rvFilms.visibility = View.GONE
                 binding.errorContainer.root.visibility = View.VISIBLE
-                Toast.makeText(
-                    this,
-                    getString(R.string.please_turn_on_the_internet),
-                    Toast.LENGTH_LONG
-                ).show()
+                showToast(R.string.please_turn_on_the_internet)
             }
         }
     }
 
     private fun performSearch(textSearch: String) {
-        val call = FilmClient.apiService.getFilms(textSearch, API_KEY)
-
-        searchJob?.cancel()
-        searchJob = scope.launch {
-            binding.rvFilms.visibility = View.GONE
-            binding.errorContainer.root.visibility = View.GONE
-            binding.progressCircular.visibility = View.VISIBLE
-
-            val result = withContext(Dispatchers.IO) {
-                call.execute()
-            }
-
-            binding.rvFilms.visibility = View.VISIBLE
-            binding.progressCircular.visibility = View.GONE
-
-            if (result.isSuccessful) {
-                val resultFilms = result.body()!!.films
-
-                if (resultFilms.isNotEmpty()) {
-                    val listFilms: MutableList<Film> = emptyList<Film>().toMutableList()
-                    resultFilms.forEach {
-                        listFilms.add(Film(0, it.title, it.description, it.posterPath, it.rating))
-                    }
-                    filmViewModel.addFilms(listFilms)
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.no_movie_found_for_your_request),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                binding.rvFilms.visibility = View.GONE
-                binding.errorContainer.root.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    override fun onDestroy() {
-        scope.cancel()
-        super.onDestroy()
+        filmViewModel.getFilms(textSearch)
     }
 
     private fun activeInternet(): Boolean {
@@ -154,5 +134,13 @@ class SearchActivity : AppCompatActivity() {
         } catch (unused: Exception) {
             false
         }
+    }
+
+    private fun showToast(stringId: Int) {
+        Toast.makeText(
+            this,
+            getString(stringId),
+            Toast.LENGTH_LONG
+        ).show()
     }
 }
